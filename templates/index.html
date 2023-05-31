@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Coventry Web-Crawler - Paper Search</title>
+
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-family: Arial, sans-serif;
+            color: #343a40;
+        }
+        .form-control {
+            border-color: #343a40;
+        }
+        .btn-primary {
+            background-color: #343a40;
+            border-color: #343a40;
+        } */
+        .coventry-img {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container d-flex align-items-center justify-content-center flex-column">
+        <img src="{{ url_for('static', filename='coventry.jpg') }}" alt="Coventry University Logo" class="coventry-img">
+        <h1 class="mt-5">Coventry Search Portal</h1>
+        
+        <form action="/search" method="POST" class="my-4 w-75">
+            <div class="input-group">
+                <input type="text" class="form-control" name="query" placeholder="Search using Author, Title or Tags">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+    <footer class="footer fixed-bottom bg-dark text-muted py-2">
+        <div class="container text-center" >
+            Designed by Aadarsha Bhetuwal
+        </div>
+    </footer>
+</body>
+</html>
