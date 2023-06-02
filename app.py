@@ -2,8 +2,12 @@ import pandas as pd
 from flask import Flask, render_template, request
 import time
 import json
+import nltk.stem as stemmer
+import pickle
+import schedule
+from scrapAuthors import scrapeAuthors
+from scrapPapers import scrapPapers
 import re
-
 app = Flask(__name__)
 
 def loadJson(x):
@@ -12,8 +16,26 @@ def loadJson(x):
     return []
 
 def reScrape():
-    # TO-DO: rescrape after a certain time
-    pass
+    scrapPapers()
+    scrapeAuthors()
+
+def scheduleNextScrape():
+    # Schedule the next scrape after 1 week
+    schedule.every(1).weeks.do(reScrape)
+
+    # Write the scheduled time to a persistent storage (e.g., a file)
+    next_scrape_time = schedule.next_run().strftime("%Y-%m-%d %H:%M:%S")
+    with open("last_scrape.txt", "w") as file:
+        file.write(next_scrape_time)
+
+# Load the last scrape time from the persistent storage
+def loadLastScrapeTime():
+    try:
+        with open("last_scrape.txt", "r") as file:
+            last_scrape_time = file.read().strip()
+            return last_scrape_time
+    except FileNotFoundError:
+        return None
 
 def loadData():
     start = time.time()
@@ -22,13 +44,13 @@ def loadData():
 
     print(f"Loaded files in {time.time() - start} seconds")
     return papers, authors
+ 
 
 PAPERS, AUTHORS = loadData()
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 def search_papers(query):
     pattern = r'(?i){}'.format(re.escape(query))
@@ -57,7 +79,6 @@ def search_papers(query):
     papers = pd.DataFrame(filtered_papers)
     return papers.to_dict('records')
 
-
 @app.route('/search', methods=['POST'])
 def search():
     query = request.form.get('query')  # Get the search query from the form
@@ -66,4 +87,6 @@ def search():
 
 
 if __name__ == '__main__':
+    
+
     app.run(debug=True)
